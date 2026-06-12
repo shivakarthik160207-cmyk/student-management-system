@@ -1,17 +1,15 @@
+from django.db.models.manager import BaseManager
 from django.shortcuts import render, redirect
 from .models import Student
 
 def home(request):
-    if request.method == "POST":
-        name = request.POST["name"]
-        course = request.POST["course"]
 
-        Student.objects.create(
-            name=name,
-            course=course
-        )
+    query = request.GET.get('q')
 
-    students = Student.objects.all()
+    if query:
+        students = Student.objects.filter(name__icontains=query)
+    else:
+        students: BaseManager[Student] = Student.objects.all()
 
     return render(
         request,
